@@ -16,6 +16,7 @@ export default class Game extends React.Component {
   static propTypes = {
     randomNumberCount: PropTypes.number.isRequired,
     initialSeconds: PropTypes.number.isRequired,
+    hardLevel: PropTypes.number.isRequired,
     onPlayAgain: PropTypes.func.isRequired,
     onWon: PropTypes.func,
     onLost: PropTypes.func
@@ -35,7 +36,7 @@ export default class Game extends React.Component {
   // Generated random numbers
   randomNumbers = Array
     .from({ length: this.props.randomNumberCount })
-    .map(() => 1 + Math.floor(10 * Math.random()));
+    .map(() => 1 + Math.floor(10 * Math.random()) + this.props.hardLevel);
 
   // Calculates the target by adding some generated numbers
   target = this.randomNumbers
@@ -43,7 +44,7 @@ export default class Game extends React.Component {
     .reduce((accu, curr) => accu + curr);
   
   // Shuffles the random numbers
-  shuffledRandomNumbers = shuffle(this.randomNumbers);
+  shuffledRandomNumbers = this.randomNumbers;
 
   flag = false;
 
