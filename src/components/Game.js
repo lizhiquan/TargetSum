@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 import RandomNumber from './RandomNumber';
 import shuffle from 'lodash.shuffle';
@@ -116,6 +116,7 @@ export default class Game extends React.Component {
     return (
       <View style={styles.container}>
         <Text style={[styles.target, styles[`STATUS_${gameStatus}`]]}>{this.target}</Text>
+        <Text style={styles.timer}>⏳ {this.state.remainingSeconds}</Text>
         <View style={styles.randomContainer}>
           {this.shuffledRandomNumbers.map((randomNumber, index) => 
             <RandomNumber
@@ -128,9 +129,10 @@ export default class Game extends React.Component {
           )}
         </View>
         {(gameStatus !== GameStatus.PLAYING) &&
-          (<Button onPress={this.props.onPlayAgain} title='Play Again'/>)
+          (<TouchableOpacity style={styles.buttonContainer} onPress={this.props.onPlayAgain}>
+            <Text style={styles.playAgainButton}>Play Again</Text>
+          </TouchableOpacity>)
         }
-        <Text>{this.state.remainingSeconds}</Text>
       </View>
     );
   }
@@ -138,7 +140,6 @@ export default class Game extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ddd',
     flex: 1
   },
 
@@ -146,7 +147,17 @@ const styles = StyleSheet.create({
     marginTop: 30,
     fontSize: 50,
     marginHorizontal: 50,
-    textAlign: 'center'
+    textAlign: 'center',
+    borderRadius: 12,
+    overflow: 'hidden',
+    color: 'white'
+  },
+
+  timer: {
+    textAlign: 'center',
+    fontSize: 20,
+    color: 'yellow',
+    marginTop: 10
   },
 
   randomContainer: {
@@ -155,14 +166,30 @@ const styles = StyleSheet.create({
   },
 
   STATUS_PLAYING: {
-    backgroundColor: '#aaa'
+    backgroundColor: '#E0A051'
   },
 
   STATUS_WON: {
-    backgroundColor: 'green'
+    backgroundColor: '#67AA56'
   },
 
   STATUS_LOST: {
-    backgroundColor: 'red'
+    backgroundColor: '#BF4744'
+  },
+
+  buttonContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  playAgainButton: {
+    backgroundColor: '#F1F1F1',
+    borderRadius: 12,
+    overflow: 'hidden',
+    color: 'black',
+    fontSize: 30,
+    height: 60,
+    padding: 10
   }
 });

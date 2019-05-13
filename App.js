@@ -49,13 +49,15 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: 'gray'
   },
 
   score: {
     fontSize: 24,
     textAlign: 'right',
     marginRight: 20,
-    marginBottom: 10
+    marginBottom: 10,
+    color: 'white'
   }
 });

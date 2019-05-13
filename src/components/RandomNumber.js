@@ -31,9 +31,12 @@ export default class RandomNumber extends Component {
 const styles = StyleSheet.create({
   random: {
     fontSize: 30,
-    backgroundColor: '#bbb',
+    backgroundColor: 'white',
     textAlign: 'center',
-    marginVertical: 20
+    marginVertical: 12,
+    borderRadius: 20,
+    overflow: 'hidden',
+    height: 40
   },
   disabled: {
     opacity: 0.3
