@@ -44,7 +44,7 @@ export default class Game extends React.Component {
     .reduce((accu, curr) => accu + curr);
   
   // Shuffles the random numbers
-  shuffledRandomNumbers = this.randomNumbers;
+  shuffledRandomNumbers = shuffle(this.randomNumbers);
 
   flag = false;
 
