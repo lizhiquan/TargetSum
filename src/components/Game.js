@@ -16,30 +16,42 @@ export default class Game extends React.Component {
   static propTypes = {
     randomNumberCount: PropTypes.number.isRequired,
     initialSeconds: PropTypes.number.isRequired,
-    onPlayAgain: PropTypes.func.isRequired
+    onPlayAgain: PropTypes.func.isRequired,
+    onWon: PropTypes.func,
+    onLost: PropTypes.func
   };
 
+  // States
   state = {
+    // Indices of selected numbers
     selectedIds: [],
+    // Current remaining seconds
     remainingSeconds: this.props.initialSeconds
   };
+
+  // Current status of the game
   gameStatus = GameStatus.PLAYING;
+
+  // Generated random numbers
   randomNumbers = Array
     .from({ length: this.props.randomNumberCount })
     .map(() => 1 + Math.floor(10 * Math.random()));
+
+  // Calculates the target by adding some generated numbers
   target = this.randomNumbers
     .slice(0, this.props.randomNumberCount - 2)
     .reduce((accu, curr) => accu + curr);
+  
+  // Shuffles the random numbers
   shuffledRandomNumbers = shuffle(this.randomNumbers);
 
+  flag = false;
+
   componentDidMount() {
+    // Setup countdown timer
     this.intervalId = setInterval(() => {
       this.setState((prevState) => {
         return { remainingSeconds: prevState.remainingSeconds - 1 };
-      }, () => {
-        if (this.state.remainingSeconds === 0) {
-          clearInterval(this.intervalId);
-        }
       });
     }, 1000);
   }
@@ -48,25 +60,39 @@ export default class Game extends React.Component {
     clearInterval(this.intervalId);
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
+    // Recalculates the game status if the user selects a number or the time is up
     if (nextState.selectedIds !== this.state.selectedIds || nextState.remainingSeconds === 0) {
       this.gameStatus = this.calcGameStatus(nextState);
       if (this.gameStatus !== GameStatus.PLAYING) {
         clearInterval(this.intervalId);
+        
+        // Workaround to prevent the code from being called multiple times after timeout
+        if (!this.flag) {
+          if (this.gameStatus === GameStatus.WON) {
+            this.props.onWon();
+          } else if (this.gameStatus === GameStatus.LOST) {
+            this.props.onLost();
+          }
+          this.flag = true;
+        }
       }
     }
   }
 
+  // Checks the index is selected
   isNumberSelected = (numberIndex) => {
     return this.state.selectedIds.indexOf(numberIndex) >= 0;
   }
 
+  // Selects a number's index
   selectNumber = (numberIndex) => {
     this.setState((prevState) => ({
       selectedIds: [...prevState.selectedIds, numberIndex] 
     }));
   }
 
+  // Calculates the game status from a state
   calcGameStatus = (nextState) => {
     const sumSelected = nextState.selectedIds
       .reduce((accu, curr) => accu + this.shuffledRandomNumbers[curr], 0);
